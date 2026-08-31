@@ -1,0 +1,30 @@
+# Local harness only — Hostinger provides Apache + MySQL itself.
+# Lets the exact deploy tree be exercised before it is uploaded.
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: vortexgig
+      MYSQL_USER: vgadmin
+      MYSQL_PASSWORD: vgpass
+    ports: ["3310:3306"]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  web:
+    image: php:8.2-apache
+    depends_on:
+      mysql: {condition: service_healthy}
+    ports: ["8090:80"]
+    volumes:
+      - ./public_html:/var/www/html
+      - ./database:/var/www/database
+    command: >
+      bash -c "docker-php-ext-install pdo_mysql >/dev/null 2>&1 &&
+               a2enmod rewrite headers >/dev/null 2>&1 &&
+               sed -ri 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf &&
+               apache2-foreground"

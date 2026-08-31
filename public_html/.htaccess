@@ -1,0 +1,55 @@
+# VortexGig — Apache config for Hostinger shared hosting.
+
+RewriteEngine On
+
+# Send everything under /api/ to the PHP front controller.
+RewriteRule ^api(/.*)?$ api/index.php [L,QSA]
+
+# Anything that is not a real file or directory is a client-side route, so
+# hand it index.html and let React Router resolve it.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . index.html [L]
+
+# --- Caching -----------------------------------------------------------------
+# index.html MUST NOT be cached: it names the content-hashed bundle, so a stale
+# copy pins visitors to an old build. Assets are hashed, so they can be cached
+# forever.
+#
+# Set through BOTH mod_expires and mod_headers, because shared hosts vary in
+# which is enabled — with neither, the CDN invents its own TTL and the homepage
+# sticks on whatever it saw first.
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|css|woff2?|ttf|svg|png|jpg|jpeg|gif|webp|ico)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate, max-age=0"
+    Header set Pragma "no-cache"
+  </FilesMatch>
+
+  # The API is per-user data and must never be cached by a CDN or a browser.
+  <FilesMatch "^index\.php$">
+    Header set Cache-Control "no-store, private"
+  </FilesMatch>
+
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Never serve the raw source of a config file.
+<FilesMatch "^(config|lib|serialize|routes_.*)\.php$">
+  Require all denied
+</FilesMatch>

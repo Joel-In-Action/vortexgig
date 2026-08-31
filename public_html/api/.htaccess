@@ -1,0 +1,27 @@
+# Everything under /api goes through index.php; the router reads the path.
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [L,QSA]
+
+# Pass HTTP Basic/Bearer auth through to PHP. Some Hostinger stacks strip the
+# Authorization header from CGI unless it is forwarded explicitly, which would
+# make every signed-in request look anonymous.
+<IfModule mod_rewrite.c>
+  RewriteCond %{HTTP:Authorization} .
+  RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+</IfModule>
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+
+# API responses are per-user and must never be cached by the CDN.
+<IfModule mod_headers.c>
+  Header always set Cache-Control "no-store, private"
+</IfModule>
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 0 seconds"
+</IfModule>
+
+# The helper files are includes, never entry points.
+<FilesMatch "^(config|lib|serialize|routes_.*)\.php$">
+  Require all denied
+</FilesMatch>

@@ -1,0 +1,168 @@
+/* ==========================================================================
+   VortexGig design tokens
+   --------------------------------------------------------------------------
+   Two themes from one set of names. Light is warm and papery with a coral
+   accent; dark is a deep navy workspace — "a lower-light view for late shifts"
+   — where the accent shifts to blue and lime, which hold up better on a dark
+   ground than coral does.
+
+   Colours are stored as bare HSL channels so any of them can be used at a
+   partial alpha with hsl(var(--x) / 0.4) without a second variable.
+   ========================================================================== */
+
+:root {
+  --background: 210 45% 98%;
+  --foreground: 221 47% 16%;
+
+  --card: 0 0% 100%;
+  --card-border: 214 28% 90%;
+  --card-shadow: 221 47% 16%;
+
+  --muted: 214 44% 94%;
+  --muted-foreground: 218 19% 45%;
+
+  --primary: 14 82% 57%;
+  --primary-foreground: 0 0% 100%;
+  --primary-soft: 14 90% 96%;
+
+  --accent: 199 89% 60%;
+  --accent-soft: 199 89% 95%;
+
+  --success: 152 60% 36%;
+  --success-soft: 152 60% 94%;
+
+  --warning: 38 92% 45%;
+  --warning-soft: 38 92% 94%;
+
+  --destructive: 1 73% 53%;
+  --destructive-soft: 1 73% 96%;
+
+  --border: 214 32% 88%;
+  --input: 214 31% 82%;
+  --ring: 14 82% 57%;
+
+  --radius: 0.9rem;
+  --radius-sm: 0.55rem;
+  --radius-lg: 1.35rem;
+
+  --font-sans: 'DM Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  --shadow-sm: 0 1px 2px hsl(var(--card-shadow) / 0.06);
+  --shadow-md: 0 4px 16px -4px hsl(var(--card-shadow) / 0.1);
+  --shadow-lg: 0 18px 40px -18px hsl(var(--card-shadow) / 0.28);
+
+  --header-height: 4.25rem;
+  --content-width: 76rem;
+}
+
+:root[data-theme='dark'] {
+  --background: 226 38% 12%;
+  --foreground: 36 40% 92%;
+
+  --card: 226 32% 17%;
+  --card-border: 226 29% 26%;
+  --card-shadow: 226 60% 4%;
+
+  --muted: 226 29% 22%;
+  --muted-foreground: 36 20% 68%;
+
+  --primary: 214 88% 55%;
+  --primary-foreground: 226 38% 12%;
+  --primary-soft: 214 60% 22%;
+
+  --accent: 74 66% 54%;
+  --accent-soft: 74 30% 22%;
+
+  --success: 152 55% 52%;
+  --success-soft: 152 35% 20%;
+
+  --warning: 38 90% 60%;
+  --warning-soft: 38 40% 22%;
+
+  --destructive: 1 73% 62%;
+  --destructive-soft: 1 40% 24%;
+
+  --border: 226 29% 25%;
+  --input: 226 29% 28%;
+  --ring: 214 88% 55%;
+
+  --shadow-sm: 0 1px 2px hsl(var(--card-shadow) / 0.4);
+  --shadow-md: 0 4px 16px -4px hsl(var(--card-shadow) / 0.55);
+  --shadow-lg: 0 18px 40px -18px hsl(var(--card-shadow) / 0.75);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-sans);
+  font-size: 0.975rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4 {
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.018em;
+}
+
+h1 { font-size: clamp(2rem, 1.4rem + 2.6vw, 3.25rem); }
+h2 { font-size: clamp(1.4rem, 1.15rem + 1.1vw, 1.9rem); }
+h3 { font-size: 1.15rem; }
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+img, svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* One visible focus treatment everywhere, and only for keyboard users. */
+:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+::selection {
+  background: hsl(var(--primary) / 0.22);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
